@@ -1,12 +1,12 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-import { mainUrl } from 'urls';
+import { mainAuthUrl } from 'urls';
 import axios from 'axios';
 import RegistrationModule from 'modules/registration/RegistrationModule';
 import Confirm from 'modules/confirm-mail/Confirm';
 
 function RegistrationPage(): JSX.Element {
-
+  const [emailLocal, setEmailLocal] = React.useState<string>('');
   const [userCode, setUserCode] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const navigate = useNavigate();
@@ -14,7 +14,9 @@ function RegistrationPage(): JSX.Element {
   const confirm = async () => {
     setIsLoading(true)
     try {
-      await axios.post(`${mainUrl}createUser`);
+      const res = await axios.post(`${mainAuthUrl}createUser`, { email: emailLocal});
+      console.log(res.data);
+      
       setIsLoading(false)
       navigate('/login');
     } catch (error) {
@@ -31,6 +33,7 @@ function RegistrationPage(): JSX.Element {
           userCode === '' ? (
             <RegistrationModule 
               setUserCode={setUserCode}
+              setEmailLocal={setEmailLocal}
             />
           ) : (
             <Confirm confirm={confirm} isLoading={isLoading} code={userCode} setCode={setUserCode} />

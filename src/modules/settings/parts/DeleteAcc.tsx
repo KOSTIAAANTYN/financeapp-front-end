@@ -23,14 +23,18 @@ export default function DeleteAcc({setIsLoading, setErrorText, setIsError, setti
     const [type, setType] = React.useState<'password' | 'text'>('password')
     const sendHandler = async () => {
         setIsError(false)
-        if (password !== passwordLocal) {
-            setErrorText('Incorrect password')
-            setIsError(true)
-            return
-        }
         setIsLoading(true)
         try {
-            await axios.post(`${mainUrl}deleteAccount`, { userId: userId })
+            const jwt = localStorage.getItem('token');
+            await axios.post(`${mainUrl}deleteAccount`, { 
+                id: userId,
+                password: passwordLocal 
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                    'Content-Type': 'application/json'
+                }
+            })
             setIsLoading(false)
             localStorage.removeItem('token')
             navigate('/')

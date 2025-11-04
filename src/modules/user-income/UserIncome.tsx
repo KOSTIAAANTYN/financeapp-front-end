@@ -38,24 +38,35 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
         saveCurrentData();
       }
     } else {
-      // Логика, которая должна выполниться при монтировании
       setMounted(true);
     }
   }, [globalTotal]);
 
-  // React.useEffect(() => {
-  //   console.log(indicate);
 
-  //   if (indicate) {
-  //     saveCurrentData()
-  //   }
-  // } , [globalTotal])
 
   const saveCurrentData = async () => {
     setIsLoading(true)
     setIsError(false)
     try {
-      await axios.post(`${mainUrl}saveData`, { data: calendar, userId: userId })
+      const jwt = localStorage.getItem('token');
+      const sortedCalendar = [...calendar].sort((a: { id: number }, b: { id: number }) => a.id - b.id);
+      await axios.post(`${mainUrl}updateCalendar`, {
+        id: userId,
+        calendar: sortedCalendar,
+        messages: sortedCalendar.map(item => ({
+          id: item.id,
+          date: item.date,
+          fullDate: item.fullDate,
+          total: item.total,
+          calendarId: userId,
+          messages: item.messages || []
+        }))
+      }, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      })
 
       setIsLoading(false)
       setIsError(false)
@@ -67,12 +78,22 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
   }
 
   const addToHistory = async () => {
-    const res = setHistoryObj(globalTotal, weekTotal, isMonthly, `${calendar[0].fullData} - ${calendar[calendar.length - 1].fullData}`, `${calendar[28].fullData} - ${calendar[calendar.length - 1].fullData}`)
+    const currentTotal = isMonthly ? globalTotal : weekTotal;
+    const historyEntry = setHistoryObj(currentTotal)
     setIsLoading(true)
     setIsError(false)
     try {
-      await axios.post(`${mainUrl}addToHistory`, { data: res, userId: userId })
-      dispatch(addHistory(res))
+      const jwt = localStorage.getItem('token');
+      await axios.post(`${mainUrl}addToHistory`, {
+        ...historyEntry,
+        id: userId
+      }, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      })
+      dispatch(addHistory(historyEntry))
       setIsLoading(false)
     } catch (error) {
       setIsLoading(false)

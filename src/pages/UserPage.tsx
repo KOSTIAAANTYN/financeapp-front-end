@@ -58,8 +58,8 @@ export default function UserPage(): JSX.Element {
           </div>
 
           <div className=" absolute flex gap-5 bottom-3 gh ">
-            <a href="https://github.com/Vas11a/financeapp" target='blanc'><img title='Frontend Part' className=' w-10 h-auto' src={gh} alt="gh-front" /></a>
-            <a href="https://github.com/Vas11a/finance-app-back" target='blanc'><img title='Backend Part' className=' w-10 h-auto' src={gh} alt="gh-back" /></a>
+            <a href="https://github.com/KOSTIAAANTYN/financeapp/tree/JWTv2" target='blanc'><img title='Frontend Part' className=' w-10 h-auto' src={gh} alt="gh-front" /></a>
+            <a href="https://github.com/KOSTIAAANTYN/financeapp/tree/JWTv2" target='blanc'><img title='Backend Part' className=' w-10 h-auto' src={gh} alt="gh-back" /></a>
           </div>
         </div>
       </div>

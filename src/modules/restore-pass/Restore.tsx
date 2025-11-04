@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './style.module.css'
 import axios from 'axios';
-import { mainUrl } from 'urls';
+import { mainAuthUrl, mainUrl } from 'urls';
 import FormInput from 'components/FormInput';
 import FormBtn from 'components/FormBtn';
 import eyeVisib from '@imgs/eye-visib.svg'
@@ -12,9 +12,11 @@ import { isValidEmail } from 'helpers';
 
 type RestoreModuleType = {
     setUserCode: (value: string) => void;
+    setEmailLocal: (value: string) => void;
+    setPasswordLocal: (value: string) => void;
 }
 
-function Restore({ setUserCode }: RestoreModuleType): JSX.Element {
+function Restore({ setUserCode, setEmailLocal: setParentEmail, setPasswordLocal: setParentPassword }: RestoreModuleType): JSX.Element {
 
     const [emailLocal, setEmailLocal] = React.useState<string>('');
     const [passwordLocal, setPasswordLocal] = React.useState<string>('');
@@ -38,8 +40,13 @@ function Restore({ setUserCode }: RestoreModuleType): JSX.Element {
         setIsLoading(true)
         setIsError(false)
         try {
-            const res = await axios.post(`${mainUrl}changePassword`, { email: emailLocal, password: passwordLocal });
+            const res = await axios.post(`${mainAuthUrl}changePassword`, {
+                email: emailLocal,
+                password: passwordLocal
+            });
             setUserCode(res.data)
+            setParentEmail(emailLocal)
+            setParentPassword(passwordLocal)
             setIsLoading(false)
         } catch (error: any) {
             if (error.response && error.response.status === 404) {

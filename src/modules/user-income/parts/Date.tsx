@@ -62,7 +62,7 @@ export default function Date({ activeDay, activeIdx }: DateType): JSX.Element {
 
     return (
         <div className={s.container}>
-            <div className={s.title} >{activeDay.fullData}</div>
+            <div className={s.title} >{activeDay.fullDate}</div>
             <div className="pt-7 flex flex-col justify-center gap-5">
                 {
                     activeDay.messages.length === 0 && <div className=' text-xl sm:text-2xl text-gray-400 font-bold' >No incomes/expenses</div>

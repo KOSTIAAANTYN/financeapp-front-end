@@ -26,8 +26,8 @@ const MyChart = ({ calendar, globalTotal, isMonthly, weekTotal }: ChartTypes) =>
         setDayTotal(totalArr)
     }, [isMonthly, globalTotal] )
 
-    const [dayTotal ,setDayTotal] = React.useState([0])
-    const [labels ,setLabels] = React.useState([0])
+    const [dayTotal ,setDayTotal] = React.useState<number[]>([0])
+    const [labels ,setLabels] = React.useState<string[]>(['0'])
     const [title, setTitle] = React.useState('Month')
 
     const data = {

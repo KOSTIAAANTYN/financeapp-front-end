@@ -13,7 +13,11 @@ interface CalendarType {
 function Calendar({ calendar, setActiveDay, activeDay, isMonthly }: CalendarType): JSX.Element {
   const [days, setDays] = React.useState<string[]>([]);
   React.useEffect(() => {
-    setDays(getDay(calendar[0].fullData));
+    if (calendar && calendar[0] && calendar[0].fullDate) {
+      if (calendar && calendar[0]) {
+      setDays(getDay(calendar[0].fullDate));
+    }
+    }
   }, [])
   
   

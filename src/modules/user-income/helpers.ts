@@ -1,19 +1,13 @@
 import { HistoryElemType } from "types"
 
-export const setHistoryObj = (g: number, w: number, isM: boolean, mData: string, wData: string) => {
+export const setHistoryObj = (total: number) => {
+    const today = new Date();
+    const formattedDate = `${String(today.getDate()).padStart(2, '0')}.${String(today.getMonth() + 1).padStart(2, '0')}.${today.getFullYear()}`;
+    
     const resObj: HistoryElemType = {
-        type: '',
-        date: '',
-        total: 0
-    }
-    if (isM) {
-        resObj.type = 'Month'
-        resObj.date = mData
-        resObj.total = g
-    } else {
-        resObj.type = 'Week'
-        resObj.date = wData
-        resObj.total = w
+        date: formattedDate,
+        type: total >= 0 ? 'income' : 'expense',
+        total: Math.abs(total)
     }
     return resObj
 }

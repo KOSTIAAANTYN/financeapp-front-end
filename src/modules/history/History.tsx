@@ -23,7 +23,15 @@ export default function History({ setIsLoading, setErrorText, setIsError }: Hist
     setIsLoading(true)
     setIsError(false)
     try {
-      await axios.post(`${mainUrl}clearHistory`, { userId: userId })
+      const jwt = localStorage.getItem('token');
+      await axios.post(`${mainUrl}clearHistory`, { 
+        userId: userId 
+      }, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      })
       setIsLoading(false)
       dispatch(setHistory([]))
     } catch (error) {
@@ -37,9 +45,16 @@ export default function History({ setIsLoading, setErrorText, setIsError }: Hist
     setIsLoading(true)
     setIsError(false)
     try {
-      let sendHistory = JSON.parse(JSON.stringify(history))
-      sendHistory.splice(idx, 1)
-      await axios.post(`${mainUrl}removeOneHistoryElem`, { userId: userId, data: sendHistory })
+      const jwt = localStorage.getItem('token');
+      await axios.post(`${mainUrl}removeOneHistoryElem`, {
+        userId: userId,
+        index: idx
+      }, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      })
       setIsLoading(false)
       dispatch(removeHistory(idx))
     } catch (error) {

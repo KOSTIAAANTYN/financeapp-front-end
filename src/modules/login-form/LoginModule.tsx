@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './style.module.css'
 import axios from 'axios';
-import { mainUrl } from 'urls';
+import { mainAuthUrl, mainUrl } from 'urls';
 import FormInput from 'components/FormInput';
 import FormBtn from 'components/FormBtn';
 import eyeVisib from '@imgs/eye-visib.svg';
@@ -13,6 +13,7 @@ import { setCalendar, setOtherState } from '@slices/userPageSlice';
 import { useAppDispatch } from 'hooks';
 import { useNavigate, Link } from 'react-router-dom';
 import { isValidEmail } from 'helpers';
+import { startTokenRefresh, stopTokenRefresh } from 'auth';
 
 function LoginModule({ isLoginPage }: { isLoginPage?: boolean }): JSX.Element {
 
@@ -27,34 +28,55 @@ function LoginModule({ isLoginPage }: { isLoginPage?: boolean }): JSX.Element {
 
     const navigate = useNavigate();
 
-    React.useEffect(() => {
-        if (localStorage.getItem('token')) {
-            
-            getAutorUser()
-        }
-    }, [])
-
-    const getAutorUser = async () => {
+    const getAutorUser = React.useCallback(async () => {
         setIsLoading(true)
         setIsError(false)
         try {
-            const res = await axios.post(`${mainUrl}getAutorUser`, { token: localStorage.getItem('token') });
+            const jwt = localStorage.getItem('token');
+            if (!jwt) {
+                setIsLoading(false);
+                return;
+            }
+
+            const res = await axios.post(`${mainUrl}loginAndCalendar`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Backend response:', res.data);
+            
             dispatch(setUserData({
                 email: res.data.email,
                 username: res.data.username,
-                userId: res.data._id,
-                password: res.data.password
-            }))
-            dispatch(setCalendar(res.data.calendar))
-            dispatch(setOtherState([res.data.globalTotal, res.data.weekTotal, res.data.isMonthly]))
+                userId: res.data.id,
+                password: res.data.password 
+            }));
+            const sortedCalendar = [...res.data.calendar].sort((a: { id: number }, b: { id: number }) => a.id - b.id);
+            dispatch(setCalendar(sortedCalendar));
+            dispatch(setOtherState([res.data.globalTotal, res.data.weekTotal, res.data.isMonthly]));
+            dispatch(setHistory(res.data.userHistory));
             
-            dispatch(setHistory(res.data.userHistory))
-            navigate('/user-pannel')
+            navigate('/user-pannel');
+
+            startTokenRefresh();
             setIsLoading(false);
-        } catch (error) {
-            setIsLoading(false)
+        } catch (error: any) {
+            if (error.response?.status === 401) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('refreshToken');
+                stopTokenRefresh();
+            }
+            setIsLoading(false);
         }
-    }
+    }, []);
+
+    React.useEffect(() => {
+        if (localStorage.getItem('token')) {
+            getAutorUser();
+        }
+    }, [getAutorUser]);
 
     const login = async () => {
         if (isValidEmail(emailLocal) === false) {
@@ -65,32 +87,53 @@ function LoginModule({ isLoginPage }: { isLoginPage?: boolean }): JSX.Element {
         setIsLoading(true)
         setIsError(false)
         try {
-            const res = await axios.post(`${mainUrl}login`, { email: emailLocal, password: passwordLocal });
+            const res = await axios.post(`${mainAuthUrl}login`, { email: emailLocal, password: passwordLocal });
+            
+            const [jwt, refreshToken] = res.data.split(';');
+            
+            localStorage.setItem('token', jwt);
+            localStorage.setItem('refreshToken', refreshToken);
+        
+            
+             const userDataRes = await axios.post(`${mainUrl}loginAndCalendar`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${jwt}`,
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+            
             dispatch(setUserData({
-                email: res.data.email,
-                username: res.data.username,
-                userId: res.data._id,
-                password: res.data.password
-            }))
-            dispatch(setCalendar(res.data.calendar))
-            dispatch(setOtherState([res.data.globalTotal, res.data.weekTotal, res.data.isMonthly]))
-            dispatch(setHistory(res.data.userHistory))
-            localStorage.setItem('token', res.data._id);
-            navigate('/user-pannel')
+                email: userDataRes.data.email,
+                username: userDataRes.data.username,
+                userId: userDataRes.data.id,
+                password: userDataRes.data.password
+            }));
+            
+            const sortedCalendar = [...userDataRes.data.calendar].sort((a: { id: number }, b: { id: number }) => a.id - b.id);
+            dispatch(setCalendar(sortedCalendar));
+            dispatch(setOtherState([
+                userDataRes.data.globalTotal, 
+                userDataRes.data.weekTotal, 
+                userDataRes.data.isMonthly
+            ]));
+            dispatch(setHistory(userDataRes.data.userHistory));
+            
+            navigate('/user-pannel');
+
+            startTokenRefresh();
             setEmailLocal('');
             setPasswordLocal('');
             setIsLoading(false);
         } catch (error: any) {
-            if (error.response && error.response.status === 404) {
-                setErrorText('Error login or password');
+            if (error.response && error.response.status === 401) {
+                setErrorText('Invalid email or password');
                 setIsError(true);
-                setIsLoading(false);
             } else {
                 setErrorText('Server error');
                 setIsError(true);
-                setIsLoading(false);
             }
-
+            setIsLoading(false);
         }
     }
 

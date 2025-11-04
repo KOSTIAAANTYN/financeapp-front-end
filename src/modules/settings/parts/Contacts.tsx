@@ -19,7 +19,12 @@ export default function Contacts({setIsLoading, setErrorText, setIsError, settin
         setIsLoading(true)
         setIsError(false)
         try {
-            await axios.post(`${mainUrl}contact`, { email: mail, question: question })
+            const jwt = localStorage.getItem('token');
+            await axios.post(`${mainUrl}contact`, { email: mail, question: question },{
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }})
             setIsLoading(false)
             setMail('')
             setQuestion('')

@@ -22,7 +22,13 @@ export default function ChangeName({ setIsLoading, setErrorText, setIsError ,set
     setIsLoading(true)
     setIsError(false)
     try {
-      await axios.post(`${mainUrl}changeName`, { userId: userId, name: newName })
+      const jwt = localStorage.getItem('token');
+      await axios.post(`${mainUrl}changeName`, { id: userId, username: newName }, {
+        headers: {
+          'Authorization': `Bearer ${jwt}`,
+          'Content-Type': 'application/json'
+        }
+      })
       dispatch(setUserName(newName))
       setIsLoading(false)
       setNewName('')

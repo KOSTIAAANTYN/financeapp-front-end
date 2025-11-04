@@ -5,9 +5,11 @@ interface Message {
 }
 
 export interface CalendarItem {
-    date: number;
-    fullData: string;
+    id: number;
+    date: string;
+    fullDate: string;
     total: number;
+    calendarId: number;
     messages: Message[];
 }
 
