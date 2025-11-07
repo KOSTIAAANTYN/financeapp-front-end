@@ -4,9 +4,6 @@ import { mainAuthUrl } from 'urls'
 const REFRESH_INTERVAL = 14 * 60 * 1000 // 15 minutes
 let refreshTimer: number | null = null
 
-/**
- * Call refresh endpoint once. Returns true if refresh succeeded.
- */
 export async function refreshTokenOnce(): Promise<boolean> {
   try {
     const refreshToken = localStorage.getItem('refreshToken')
@@ -51,8 +48,10 @@ export function stopTokenRefresh(): void {
   }
 }
 
-export default {
+const auth = {
   refreshTokenOnce,
   startTokenRefresh,
   stopTokenRefresh
 }
+
+export default auth
