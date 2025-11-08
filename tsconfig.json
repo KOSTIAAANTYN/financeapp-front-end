@@ -18,15 +18,14 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "jsx": "react-jsx",
-    
     "baseUrl": "src",
     "paths": {
-      "@/*": ["./src/*"],
-      "@slices/*": ["./store/slices/*"], 
-      "@imgs/*": ["./assets/imgs/*"],
+      "@/*": ["./*"],
+      "@slices/*": ["store/slices/*"],
+      "@imgs/*": ["assets/imgs/*"]
     },
+    "noEmit": true,
+    "jsx": "react-jsx",
   },
   "include": [
     "src"
