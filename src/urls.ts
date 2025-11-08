@@ -1,4 +1,4 @@
 
 // export const mainUrl = 'https://node-back-finance-app.onrender.com/'
-export const mainUrl = 'http://localhost:8080/secured/';
-export const mainAuthUrl = 'http://localhost:8080/auth/'
+export const mainUrl = 'https://financeapp-y081.onrender.com/secured/';
+export const mainAuthUrl = 'https://financeapp-y081.onrender.com/auth/'
