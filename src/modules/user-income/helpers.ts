@@ -13,21 +13,20 @@ export const setHistoryObj = (total: number) => {
 }
 
 export const getDay = (dateString: string) => {
-    let dateParts = dateString.split('.');
-    let day = parseInt(dateParts[0], 10);
-    let month = parseInt(dateParts[1], 10) - 1;
-    let year = parseInt(dateParts[2], 10);
-    let date = new Date(year, month, day);
-    let dayOfWeek = date.getDay();
-    let daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S', 'S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    let firstLetterOfDay = [
-        daysOfWeek[dayOfWeek], 
-        daysOfWeek[dayOfWeek + 1], 
-        daysOfWeek[dayOfWeek + 2], 
-        daysOfWeek[dayOfWeek + 3], 
-        daysOfWeek[dayOfWeek + 4], 
-        daysOfWeek[dayOfWeek + 5], 
-        daysOfWeek[dayOfWeek + 6]
-    ];
-    return firstLetterOfDay
+    const [day, month, year] = dateString.split('.').map(num => parseInt(num, 10));
+    const lastDate = new Date(year, month - 1, day);
+    
+    const daysOfWeek = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    
+    const startDate = new Date(lastDate);
+    startDate.setDate(lastDate.getDate() - 34);
+    const startDayOfWeek = startDate.getDay();
+    
+    const result = [];
+    for (let i = 0; i < 7; i++) {
+        const dayIndex = (startDayOfWeek + i) % 7;
+        result.push(daysOfWeek[dayIndex]);
+    }
+    
+    return result;
 }

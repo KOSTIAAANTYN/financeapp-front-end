@@ -22,29 +22,13 @@ type UserIncomeType = {
 }
 
 export default function UserIncome({ setIsLoading, setErrorText, setIsError }: UserIncomeType): JSX.Element {
-
   const dispatch = useAppDispatch()
   const [activeDay, setActiveDay] = React.useState<number>(34)
   const { calendar, globalTotal, weekTotal, isMonthly, indicate } = useAppSelector(state => state.userPage)
   const { userId } = useAppSelector(state => state.profile)
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    if (mounted) {
-      console.log(indicate);
-      console.log(globalTotal);
-
-      if (indicate) {
-        saveCurrentData();
-      }
-    } else {
-      setMounted(true);
-    }
-  }, [globalTotal]);
-
-
-
-  const saveCurrentData = async () => {
+  const saveCurrentData = React.useCallback(async () => {
     setIsLoading(true)
     setIsError(false)
     try {
@@ -66,8 +50,8 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
           'Authorization': `Bearer ${jwt}`,
           'Content-Type': 'application/json'
         }
-      })
-
+      });
+      dispatch(setIndicator()); 
       setIsLoading(false)
       setIsError(false)
     } catch (error) {
@@ -75,9 +59,19 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
       setIsError(true)
       setIsLoading(false)
     }
-  }
+  }, [calendar, userId, setIsLoading, setIsError, setErrorText, dispatch]);
 
-  const addToHistory = async () => {
+  React.useEffect(() => {
+    if (mounted) {
+      if (indicate) {
+        saveCurrentData();
+      }
+    } else {
+      setMounted(true);
+    }
+  }, [indicate, mounted, saveCurrentData]);
+
+  const addToHistory = React.useCallback(async () => {
     const currentTotal = isMonthly ? globalTotal : weekTotal;
     const historyEntry = setHistoryObj(currentTotal)
     setIsLoading(true)
@@ -100,7 +94,7 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
       setErrorText('Server error')
       setIsError(true)
     }
-  }
+  }, [dispatch, globalTotal, isMonthly, setErrorText, setIsError, setIsLoading, userId, weekTotal]);
 
   return (
     <div className='h-full'>
@@ -120,9 +114,9 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
           <span
             className={`${isMonthly ? globalTotal < 0 ? 'text-red-500' : 'text-green-500' : weekTotal < 0 ? 'text-red-500' : 'text-green-500'}`}>
             {isMonthly ? globalTotal : weekTotal}
-          </span></div>
+          </span>
+        </div>
       </div>
-
     </div>
   )
 }

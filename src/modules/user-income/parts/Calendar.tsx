@@ -14,11 +14,9 @@ function Calendar({ calendar, setActiveDay, activeDay, isMonthly }: CalendarType
   const [days, setDays] = React.useState<string[]>([]);
   React.useEffect(() => {
     if (calendar && calendar[0] && calendar[0].fullDate) {
-      if (calendar && calendar[0]) {
       setDays(getDay(calendar[0].fullDate));
     }
-    }
-  }, [])
+  }, [calendar])
   
   
   return (
