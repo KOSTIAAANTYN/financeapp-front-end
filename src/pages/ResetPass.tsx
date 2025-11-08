@@ -1,6 +1,5 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import { mainAuthUrl, mainUrl } from 'urls';
+import { mainAuthUrl } from 'urls';
 import axios from 'axios';
 import Restore from 'modules/restore-pass/Restore';
 import Confirm from 'modules/confirm-mail/Confirm';
@@ -10,8 +9,7 @@ function ResetPass(): JSX.Element {
   const [userCode, setUserCode] = React.useState<string>('');
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [emailLocal, setEmailLocal] = React.useState<string>('');
-      const [passwordLocal, setPasswordLocal] = React.useState<string>('');
-  const navigate = useNavigate();
+  const [passwordLocal, setPasswordLocal] = React.useState<string>('');
 
   const confirm = async () => {
     setIsLoading(true)

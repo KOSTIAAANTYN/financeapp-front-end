@@ -29,11 +29,11 @@ export default function Date({ activeDay, activeIdx }: DateType): JSX.Element {
         } else {
             setEqual(false)
         }
-    }, [activeDay])
+    }, [activeDay, oldData])
     React.useEffect(() => {
         setOldData(JSON.stringify(activeDay.messages))
         setEqual(true)
-    }, [activeIdx])
+    }, [activeDay.messages, activeIdx])
 
     const changeDescription = (e: React.ChangeEvent<HTMLInputElement>, idx: number) => {
         dispatch(changeDescriptionR([activeIdx, idx, e.target.value]))

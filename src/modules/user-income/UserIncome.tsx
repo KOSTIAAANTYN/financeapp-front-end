@@ -9,7 +9,6 @@ import MemoSave from './parts/Save'
 import { CategoryScale } from "chart.js";
 import { useAppSelector, useAppDispatch } from 'hooks'
 import { addHistory } from '@slices/userHistorySlice'
-import { setIndicator } from '@slices/userPageSlice'
 import axios from 'axios'
 import { setHistoryObj } from './helpers'
 import { mainUrl } from 'urls'
@@ -29,22 +28,7 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
   const { userId } = useAppSelector(state => state.profile)
   const [mounted, setMounted] = React.useState(false);
 
-  React.useEffect(() => {
-    if (mounted) {
-      console.log(indicate);
-      console.log(globalTotal);
-
-      if (indicate) {
-        saveCurrentData();
-      }
-    } else {
-      setMounted(true);
-    }
-  }, [globalTotal]);
-
-
-
-  const saveCurrentData = async () => {
+  const saveCurrentData = React.useCallback(async () => {
     setIsLoading(true)
     setIsError(false)
     try {
@@ -67,7 +51,6 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
           'Content-Type': 'application/json'
         }
       })
-
       setIsLoading(false)
       setIsError(false)
     } catch (error) {
@@ -75,7 +58,17 @@ export default function UserIncome({ setIsLoading, setErrorText, setIsError }: U
       setIsError(true)
       setIsLoading(false)
     }
-  }
+  }, [calendar, userId, setIsLoading, setIsError, setErrorText]);
+
+  React.useEffect(() => {
+    if (mounted) {
+      if (indicate) {
+        saveCurrentData();
+      }
+    } else {
+      setMounted(true);
+    }
+  }, [globalTotal, indicate, mounted, saveCurrentData]);
 
   const addToHistory = async () => {
     const currentTotal = isMonthly ? globalTotal : weekTotal;

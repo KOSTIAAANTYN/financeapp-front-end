@@ -70,7 +70,7 @@ function LoginModule({ isLoginPage }: { isLoginPage?: boolean }): JSX.Element {
             }
             setIsLoading(false);
         }
-    }, []);
+    }, [dispatch, navigate]);
 
     React.useEffect(() => {
         if (localStorage.getItem('token')) {

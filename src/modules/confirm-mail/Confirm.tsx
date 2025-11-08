@@ -2,22 +2,19 @@ import React from 'react'
 import s from './style.module.css'
 import FormInput from 'components/FormInput';
 import FormBtn from 'components/FormBtn';
-import { useNavigate } from 'react-router-dom';
 import Spinner from 'components/Spinner';
 
 function Confirm({code, setCode, confirm, isLoading}: {isLoading: boolean;code: string; setCode: (value: string) => void; confirm: () => void}):JSX.Element {
 
     const [userCode, setUserCode] = React.useState<string>('');
     const [isDisabled, setIsDisabled] = React.useState<boolean>(true);
-    const navigate = useNavigate();
-
     React.useEffect(()=> {
         if (userCode === `${code}`) {
             setIsDisabled(false);
         } else {
             setIsDisabled(true);
         }
-    }, [userCode])
+    }, [userCode, code])
 
     return (
         <div className={s.container}>

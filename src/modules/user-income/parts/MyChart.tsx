@@ -13,7 +13,6 @@ type ChartTypes = {
 const MyChart = ({ calendar, globalTotal, isMonthly, weekTotal }: ChartTypes) => {
     
     React.useEffect(() => {
-        
         let totalArr = calendar.map((elem) => elem.total)
         let newLabels = calendar.map((elem) => elem.date);
         setTitle('Month')
@@ -24,7 +23,7 @@ const MyChart = ({ calendar, globalTotal, isMonthly, weekTotal }: ChartTypes) =>
         }
         setLabels(newLabels)
         setDayTotal(totalArr)
-    }, [isMonthly, globalTotal] )
+    }, [isMonthly, globalTotal, calendar] )
 
     const [dayTotal ,setDayTotal] = React.useState<number[]>([0])
     const [labels ,setLabels] = React.useState<string[]>(['0'])

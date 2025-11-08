@@ -19,7 +19,7 @@ export default function DeleteAcc({setIsLoading, setErrorText, setIsError, setti
 
     const [passwordLocal, setPasswordL] = React.useState<string>('')
     const navigate = useNavigate()
-    const {password, userId} = useAppSelector(state => state.profile)
+    const {userId} = useAppSelector(state => state.profile)
     const [type, setType] = React.useState<'password' | 'text'>('password')
     const sendHandler = async () => {
         setIsError(false)
