@@ -24,10 +24,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "craco start",
-    "build": "craco build", 
-    "test": "craco test",
-    "eject": "craco eject"
+    "start": "npx craco start",
+    "build": "npx craco build", 
+    "test": "npx craco test",
+    "eject": "npx craco eject"
   },
   "eslintConfig": {
     "extends": [
