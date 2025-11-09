@@ -1,7 +1,7 @@
 import React from 'react'
 import s from './style.module.css'
 import axios from 'axios';
-import { mainAuthUrl, mainUrl } from 'urls';
+import { mainAuthUrl} from 'urls';
 import FormInput from 'components/FormInput';
 import FormBtn from 'components/FormBtn';
 import eyeVisib from '@imgs/eye-visib.svg'

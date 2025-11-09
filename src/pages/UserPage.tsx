@@ -12,14 +12,14 @@ export default function UserPage(): JSX.Element {
   const [isLoading, setIsLoading] = React.useState<boolean>(false);
   const [isError, setIsError] = React.useState<boolean>(false);
   const [errorText, setErrorText] = React.useState<string>('Server error');
-  const  {username, email, password, userId} = useAppSelector(state => state.profile);
+  const { userId, username } = useAppSelector(state => state.profile);
   const navigate = useNavigate();
 
   React.useEffect(()=> {
       if (userId === '') {
           navigate('/')
       }
-  }, [])
+  }, [userId, navigate])
 
   const [selectedModule, setSelectedModule] = React.useState<number>(1);
   const changeModule = (value: number) => {

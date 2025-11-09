@@ -1,7 +1,5 @@
 import React from 'react'
 import Button from 'components/Button';
-import { CalendarItem } from 'types';
-
 type SaveType = {
     isMonthly: boolean
     addToHistory: () => void
